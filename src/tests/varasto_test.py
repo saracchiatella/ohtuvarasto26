@@ -38,3 +38,60 @@ class TestVarasto(unittest.TestCase):
 
         # varastossa pitäisi olla tilaa 10 - 8 + 2 eli 4
         self.assertAlmostEqual(self.varasto.paljonko_mahtuu(), 4)
+
+    
+    def test_konstruktori_nollaa_negatiivisen_tilavuuden(self):
+        varasto = Varasto(-5)
+        self.assertEqual(varasto.tilavuus, 0)
+
+    def test_konstruktori_nollaa_negatiivisen_alkusaldon(self):
+        varasto = Varasto(10, -2)
+        self.assertEqual(varasto.saldo, 0)
+
+    def test_konstruktori_tayttaa_liian_suuren_alkusaldon(self):
+        varasto = Varasto(10, 15)
+        self.assertEqual(varasto.saldo, 10)
+
+    def test_konstruktori_hyvaksyy_tasan_tilavuuden(self):
+        varasto = Varasto(10, 10)
+        self.assertEqual(varasto.saldo, 10)
+
+    def test_lisays_negatiivisella_maaramalla(self):
+        self.varasto.lisaa_varastoon(-2)
+        self.assertEqual(self.varasto.saldo, 0)
+
+    def test_lisays_liian_suurella_maaramalla(self):
+        self.varasto.lisaa_varastoon(15)
+        self.assertEqual(self.varasto.saldo, 10)
+
+    def test_lisays_tasan_vapaaseen_tilaan(self):
+        self.varasto.lisaa_varastoon(10)
+        self.assertEqual(self.varasto.saldo, 10)
+
+    def test_ottaminen_negatiivisella_maaramalla(self):
+        saatu = self.varasto.ota_varastosta(-2)
+        self.assertEqual(saatu, 0)
+        self.assertEqual(self.varasto.saldo, 0)
+
+    def test_ottaminen_liian_suurella_maaramalla(self):
+        self.varasto.lisaa_varastoon(5)
+        saatu = self.varasto.ota_varastosta(8)
+
+        self.assertEqual(saatu, 5)
+        self.assertEqual(self.varasto.saldo, 0)
+
+    def test_ottaminen_tasan_saldon_verran(self):
+        self.varasto.lisaa_varastoon(5)
+        saatu = self.varasto.ota_varastosta(5)
+
+        self.assertEqual(saatu, 5)
+        self.assertEqual(self.varasto.saldo, 0)
+
+    def test_merkkijonoesitys(self):
+        self.varasto.lisaa_varastoon(5)
+
+        self.assertEqual(
+            str(self.varasto),
+            "saldo = 5, vielä tilaa 5"
+        )
+
